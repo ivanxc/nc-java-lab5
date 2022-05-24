@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Добавить пользователя</title>
+</head>
+<body>
+  <h2> Добавить пользователя</h2>
+  <form action="#" th:action="@{/users}" th:object="${newUser}" method="post">
+    <label>
+      Имя: <input type="text" th:field="*{name}"/>
+      <p th:if="${userFields?.hasFieldErrors('name')}">Имя должно содержать не менее двух букв</p>
+    </label> <br/>
+    <label>
+      Фамилия: <input type="text" th:field="*{surname}"/>
+      <p th:if="${userFields?.hasFieldErrors('surname')}">Фамилия должна содержать не менее двух букв</p>
+    </label> <br/>
+    <label>
+      Отчество: <input type="text" th:field="*{patronymic}"/>
+      <p th:if="${userFields?.hasFieldErrors('patronymic')}">Отчество должно содержать не менее двух букв</p>
+    </label> <br/>
+    <label>
+      Возраст: <input type="text" th:field="*{age}"/>
+      <p th:if="${userFields?.hasFieldErrors('age')}">Указан ненастоящий возраст</p>
+    </label> <br/>
+    <label>
+      Зарплата: <input type="text" th:field="*{salary}"/>
+      <p th:if="${userFields?.hasFieldErrors('salary')}">Зарплата должна быть больше 0</p>
+    </label> <br/>
+    <label>
+      Почта: <input type="text" th:field="*{email}"/>
+      <p th:if="${userFields?.hasFieldErrors('email')}">Email должен быть вида example@mail.com</p>
+    </label> <br/>
+    <label>
+      Работа: <input type="text" th:field="*{job}"/>
+      <p th:if="${userFields?.hasFieldErrors('email')}">Работа не указана</p>
+    </label> <br/>
+    <label>
+      <input type="submit" value="Создать"/>
+    </label>
+  </form>
+  <h5>ИЛИ</h5>
+  <form action="/users/json" enctype="multipart/form-data" method="post">
+    <p>Загрузите файл в формате JSON:
+      <input type="file" name="file" value="Загрузить файл"/>
+      <p th:if="${fileError}">Ошибка при загрузке файла</p>
+    </p>
+    <label>
+      <input type="submit" value="Создать">
+    </label>
+  </form>
+</body>
+</html>

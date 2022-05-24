@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Email result</title>
+</head>
+<body>
+  <h1>
+    <span th:if="${isSent}">Сообщение отправлено</span>
+    <span th:if="${!isSent}">Сообщение не было отправлено</span>
+  </h1>
+</body>
+</html>

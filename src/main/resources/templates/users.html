@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>CRUD USERS</title>
+</head>
+<body>
+<h2> Добавить пользователя</h2>
+  <a href="/users/new">
+    <button>Создать нового пользователя</button>
+  </a>
+  <h3>Поиск</h3>
+    <form action="#" th:action="@{/users}" method="get" th:object="${userFilter}"
+          onsubmit="disableEmptyInputs(this)">
+      <label>
+        Имя: <input name="name" type="text" th:field="*{name}"/>
+      </label>
+      <label>
+        Фамилия: <input name="surname" type="text" th:field="*{surname}"/>
+      </label>
+      <label>
+        Отчество: <input name="patronymic" type="text" th:field="*{patronymic}"/>
+      </label> <br/>
+      <label>
+        Возраст: <input name="age" type="text" th:field="*{age}"/>
+      </label>
+      <label>
+        Зарплата: <input name="salary" type="text" th:field="*{salary}"/>
+      </label> <br/>
+      <label>
+        Почта: <input name="email" type="text" th:field="*{email}"/>
+      </label>
+      <label>
+        Работа: <input name="job" type="text" th:field="*{job}"/>
+      </label>
+      <p>
+        <input type="submit" value="Найти"/>
+      </p>
+    </form>
+
+  <p th:if="${userAgent}" th:text="${userAgent}"></p>
+  <p th:if="${time}" th:text="${time}"></p>
+
+  <table>
+    <caption>Пользователи в БД</caption>
+    <tr>
+      <th>Имя</th>
+      <th>Фамилия</th>
+      <th>Отчество</th>
+      <th>Возраст</th>
+      <th>Зарплата</th>
+      <th>Почта</th>
+      <th>Работа</th>
+      <th>Действия</th>
+    </tr>
+    <tbody>
+    <tr th:each="user : ${users}">
+      <td class="user-attr" th:text="${user.id}" hidden="hidden">id</td>
+      <td class="user-attr" >
+        <a th:href="@{'/users/' + ${user.id}}" th:text="${user.name}"></a>
+      </td>
+      <td class="user-attr" th:text="${user.surname}">surname</td>
+      <td class="user-attr" th:text="${user.patronymic}">patronymic</td>
+      <td class="user-attr" th:text="${user.age}">age</td>
+      <td class="user-attr" th:text="${user.salary}">salary</td>
+      <td class="user-attr" th:text="${user.email}">email</td>
+      <td class="user-attr" th:text="${user.job}">job</td>
+      <td>
+        <form th:action="@{'/users/' + ${user.id}}" method="get">
+          <input type="submit" value="Изменить">
+        </form>
+        <form action="#" th:action="@{'/users/' + ${user.id} + '/delete'}" method="post">
+          <input type="submit" value="Удалить">
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <script>
+    function disableEmptyInputs(form) {
+      var controls = form.elements;
+      for (var i = 0, iLen = controls.length; i < iLen; i++) {
+        controls[i].disabled = controls[i].value == '';
+      }
+    }
+  </script>
+</body>
+</html>
