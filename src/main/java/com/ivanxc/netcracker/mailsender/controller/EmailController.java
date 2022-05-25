@@ -28,20 +28,15 @@ public class EmailController {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("emailFields", bindingResult);
-
             String[] linkPieces = request.getHeader("Referer").split("/");
             return "redirect:/users/" + linkPieces[linkPieces.length - 1];
         }
 
         try {
-            emailService.sendSimpleMessage(emailDto.getTo(),
-                emailDto.getSubject(),
+            emailService.sendSimpleMessage(emailDto.getTo(), emailDto.getSubject(),
                 emailDto.getContent());
-            model.addAttribute("status", "отправлено");
             model.addAttribute("isSent", true);
         } catch (MailException e) {
-            e.printStackTrace();
-            model.addAttribute("status", "не отправлено");
             model.addAttribute("isSent", false);
         }
         return "email-result";

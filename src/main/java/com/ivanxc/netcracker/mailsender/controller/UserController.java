@@ -95,7 +95,7 @@ public class UserController {
 
     @PostMapping("/json")
     public String create(@RequestParam("file") MultipartFile file, Model model) {
-        if (fileService.canUpload(file)) {
+        if (fileService.upload(file).isUploadedSuccessfully()) {
             return "redirect:/users";
         }
 
