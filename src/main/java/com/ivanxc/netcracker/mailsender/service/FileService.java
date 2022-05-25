@@ -6,9 +6,11 @@ import com.ivanxc.netcracker.mailsender.model.UserDto;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
+@Service
 public class FileService {
 
     private final UserService userService;
