@@ -32,13 +32,10 @@ public class EmailController {
             return "redirect:/users/" + linkPieces[linkPieces.length - 1];
         }
 
-        try {
-            emailService.sendSimpleMessage(emailDto.getTo(), emailDto.getSubject(),
-                emailDto.getContent());
-            model.addAttribute("isSent", true);
-        } catch (MailException e) {
-            model.addAttribute("isSent", false);
-        }
+        boolean isSent = emailService.sendMessage(emailDto.getTo(), emailDto.getSubject(),
+            emailDto.getContent()).isSentSuccessfully();
+        model.addAttribute("isSent", isSent);
+
         return "email-result";
     }
 }
