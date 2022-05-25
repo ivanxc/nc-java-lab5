@@ -1,12 +1,10 @@
 package com.ivanxc.netcracker.mailsender.controller;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ivanxc.netcracker.mailsender.model.UserFilter;
 import com.ivanxc.netcracker.mailsender.model.EmailDto;
 import com.ivanxc.netcracker.mailsender.model.UserDto;
+import com.ivanxc.netcracker.mailsender.service.FileService;
 import com.ivanxc.netcracker.mailsender.service.UserService;
-import java.io.IOException;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +31,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class UserController {
 
     private final UserService userService;
+    private final FileService fileService;
 
     @GetMapping
     public String findAll(Model model, @ModelAttribute("userFilter") UserFilter userFilter,
@@ -87,7 +86,6 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("newUser", newUser);
             redirectAttributes.addFlashAttribute("userFields", bindingResult);
-            System.out.println(bindingResult.getAllErrors());
             return "redirect:/users/new";
         }
 
@@ -97,25 +95,13 @@ public class UserController {
 
     @PostMapping("/json")
     public String create(@RequestParam("file") MultipartFile file, Model model) {
-        if (!file.isEmpty() && "application/json".equals(file.getContentType())) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-            try {
-                String content = new String(file.getInputStream().readAllBytes());
-                UserDto user = objectMapper.readValue(content, UserDto.class);
-                userService.create(user);
-            } catch (IOException exception) {
-                model.addAttribute("fileError", true);
-                model.addAttribute("newUser", new UserDto());
-                return "new-user";
-            }
+        if (fileService.canUpload(file)) {
             return "redirect:/users";
-        } else {
-            model.addAttribute("fileError", true);
-            model.addAttribute("newUser", new UserDto());
-            return "new-user";
         }
+
+        model.addAttribute("fileError", true);
+        model.addAttribute("newUser", new UserDto());
+        return "new-user";
     }
 
     @PostMapping("/{id}/update")
@@ -126,7 +112,6 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("user", user);
             redirectAttributes.addFlashAttribute("userFields", bindingResult);
-            System.out.println(bindingResult.getAllErrors());
             return "redirect:/users/{id}";
         }
 
@@ -137,7 +122,6 @@ public class UserController {
 
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") Long id) {
-        System.out.println("delete");
         if (!userService.delete(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
